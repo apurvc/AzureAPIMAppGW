@@ -1,4 +1,4 @@
-**Integrate API Management in an internal VNET with Application Gateway**
+# This project has script for Installing Azure apim in Vnet
 
 
 
