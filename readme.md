@@ -5,7 +5,7 @@
 # Scenario
 To deploy APIM with API gateway against a vnet so that it is not externally accessible and is secured with ddos and other protections 
 
-![Architecture diagram](Screenshot 2019-10-07 at 09.48.02.png)
+![Architecture diagram](secured apim management.png)
 
 # Deployment
 This PowerShell script deploys - 
