@@ -7,7 +7,7 @@
 Connect-AzAccount
 
 # Set subscription
-$subscriptionId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" #  GUID of target Azure subscription
+$subscriptionId = "c31768cb-5dcd-4a40-a614-36affc7fa869" #  GUID of target Azure subscription
 Get-AzSubscription -Subscriptionid $subscriptionId | Select-AzSubscription
 
 # Create resource group
@@ -43,11 +43,11 @@ $apimService = New-AzApiManagement -ResourceGroupName $resGroupName -Location $l
 # Specify cert configuration
 $gatewayHostname = "apim.yourdomain.co.uk"                 # API gateway host
 $portalHostname = "portal.yourdomain.co.uk"               # API developer portal host
-$gatewayCertCerPath = "C:\temp\apimcert.cer" # full path to apim.yourdomain.co.uk .cer file
-$gatewayCertPfxPath = "C:\temp\apimcert.pfx" # full path to apim.yourdomain.co.uk .pfx file
-$portalCertPfxPath = "C:\temp\portalcert.pfx"   # full path to portal.yourdomain.co.uk .pfx file
-$gatewayCertPfxPassword = "abc123"   # password for apim.yourdomain.co.uk pfx certificate
-$portalCertPfxPassword = "abc123"    # password for portal.yourdomain.co.uk pfx certificate
+$gatewayCertCerPath = "apimcert.cer" # full path to apim.yourdomain.co.uk .cer file
+$gatewayCertPfxPath = "apimcert.pfx" # full path to apim.yourdomain.co.uk .pfx file
+$portalCertPfxPath = "portalcert.pfx"   # full path to portal.yourdomain.co.uk .pfx file
+$gatewayCertPfxPassword = "apurv1234"   # password for apim.yourdomain.co.uk pfx certificate
+$portalCertPfxPassword = "apurv1234"    # password for portal.yourdomain.co.uk pfx certificate
 
 $certPwd = ConvertTo-SecureString -String $gatewayCertPfxPassword -AsPlainText -Force
 $certPortalPwd = ConvertTo-SecureString -String $portalCertPfxPassword -AsPlainText -Force
@@ -123,13 +123,3 @@ $listener = Get-AzApplicationGatewayHttpListener -Name "apim-gw-listener01" -App
 $sinkpool = Get-AzApplicationGatewayBackendAddressPool -ApplicationGateway $appgw -Name "sinkpool"
 $pool = Get-AzApplicationGatewayBackendAddressPool -ApplicationGateway $appgw -Name "apimbackend"
 $poolSettings = Get-AzApplicationGatewayBackendHttpSettings -ApplicationGateway $appgw -Name "apim-gw-poolsetting"
-
-# Add external path rule + map
-#$pathRule = New-AzApplicationGatewayPathRuleConfig -Name "external" -Paths "/external/*" -BackendAddressPool $pool -BackendHttpSettings $poolSettings
-$appgw = Add-AzApplicationGatewayUrlPathMapConfig -ApplicationGateway $appgw -Name "external-urlpathmapconfig" -PathRules $pathRule -DefaultBackendAddressPool $sinkpool -DefaultBackendHttpSettings $poolSettings
-$appgw = Set-AzApplicationGateway -ApplicationGateway $appgw
-
-# Add external path-based routing rule
-$pathmap = Get-AzApplicationGatewayUrlPathMapConfig -ApplicationGateway $appgw -Name "external-urlpathmapconfig"
-$appgw = Add-AzApplicationGatewayRequestRoutingRule -ApplicationGateway $appgw -Name "apim-gw-external-rule01" -RuleType PathBasedRouting -HttpListener $listener -BackendAddressPool $Pool -BackendHttpSettings $poolSettings -UrlPathMap $pathMap
-$appgw = Set-AzApplicationGateway -ApplicationGateway $appgw
