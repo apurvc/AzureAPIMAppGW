@@ -11,7 +11,7 @@ $subscriptionId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" #  GUID of target Azure
 Get-AzSubscription -Subscriptionid $subscriptionId | Select-AzSubscription
 
 # Create resource group
-$resGroupName = "myresourcegroup-rg" # resource group name
+$resGroupName = "rg-appgw-apim" # resource group name
 $location = "UK South"           # Azure region
 New-AzResourceGroup -Name $resGroupName -Location $location
 
@@ -41,12 +41,12 @@ $apimAdminEmail = "admin@yourdomain.org" # administrator's email address
 $apimService = New-AzApiManagement -ResourceGroupName $resGroupName -Location $location -Name $apimServiceName -Organization $apimOrganization -AdminEmail $apimAdminEmail -VirtualNetwork $apimVirtualNetwork -VpnType "Internal" -Sku "Developer"
 
 # Specify cert configuration
-$gatewayHostname = "api.yourdomain.org"                 # API gateway host
-$portalHostname = "portal.yourdomain.org"               # API developer portal host
-$gatewayCertCerPath = "C:\temp\apicert.cer" # full path to api.yourdomain.co.uk .cer file
-$gatewayCertPfxPath = "C:\temp\apicert.pfx" # full path to api.yourdomain.co.uk .pfx file
+$gatewayHostname = "apim.yourdomain.co.uk"                 # API gateway host
+$portalHostname = "portal.yourdomain.co.uk"               # API developer portal host
+$gatewayCertCerPath = "C:\temp\apimcert.cer" # full path to apim.yourdomain.co.uk .cer file
+$gatewayCertPfxPath = "C:\temp\apimcert.pfx" # full path to apim.yourdomain.co.uk .pfx file
 $portalCertPfxPath = "C:\temp\portalcert.pfx"   # full path to portal.yourdomain.co.uk .pfx file
-$gatewayCertPfxPassword = "abc123"   # password for api.yourdomain.co.uk pfx certificate
+$gatewayCertPfxPassword = "abc123"   # password for apim.yourdomain.co.uk pfx certificate
 $portalCertPfxPassword = "abc123"    # password for portal.yourdomain.co.uk pfx certificate
 
 $certPwd = ConvertTo-SecureString -String $gatewayCertPfxPassword -AsPlainText -Force
@@ -125,7 +125,7 @@ $pool = Get-AzApplicationGatewayBackendAddressPool -ApplicationGateway $appgw -N
 $poolSettings = Get-AzApplicationGatewayBackendHttpSettings -ApplicationGateway $appgw -Name "apim-gw-poolsetting"
 
 # Add external path rule + map
-$pathRule = New-AzApplicationGatewayPathRuleConfig -Name "external" -Paths "/external/*" -BackendAddressPool $pool -BackendHttpSettings $poolSettings
+#$pathRule = New-AzApplicationGatewayPathRuleConfig -Name "external" -Paths "/external/*" -BackendAddressPool $pool -BackendHttpSettings $poolSettings
 $appgw = Add-AzApplicationGatewayUrlPathMapConfig -ApplicationGateway $appgw -Name "external-urlpathmapconfig" -PathRules $pathRule -DefaultBackendAddressPool $sinkpool -DefaultBackendHttpSettings $poolSettings
 $appgw = Set-AzApplicationGateway -ApplicationGateway $appgw
 
