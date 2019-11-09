@@ -3,6 +3,8 @@
 # Scenario
 To deploy APIM with API gateway in a vnet so that it is accessible via a custom domain and is secured with ddos and other protections like NSG for only specific port and certificates being linked from Keyvault.
 
+It also contains a draw.io diagram to edit/ adapt to new requirements.
+
 
 
 # High level Diagram
